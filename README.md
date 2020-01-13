@@ -14,13 +14,13 @@ This package works with various semi-structured and unstructured datatypes, incl
 
 To install the dependencies, run `install.packages("<PACKAGE-NAME>")` in R.
 
-*tidyverse
-*data.table
-*lubridate
-*chron
-*rowr
-*jsonlite
-*xml2
+* tidyverse
+* data.table
+* lubridate
+* chron
+* rowr
+* jsonlite
+* xml2
 
 ## Use the package!
 
