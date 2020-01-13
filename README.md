@@ -1,7 +1,7 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues) [![HitCount](http://hits.dwyl.io/sullivannicole/tcsensors.svg)](http://hits.dwyl.io/sullivannicole/tcsensors) 
 
 <!-- badges: start --> 
-use_lifecycle_badge("Maturing")
+use_lifecycle_badge(Maturing)
 <!-- badges: end -->
 
 # Background
