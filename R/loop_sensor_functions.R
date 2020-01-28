@@ -31,7 +31,7 @@
 
 #' @export
 
-pull_sensors <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
+pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 
   library(tidyverse)
   library(data.table)
