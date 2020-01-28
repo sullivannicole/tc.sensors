@@ -13,13 +13,13 @@
 #'   loop_data <- pull_sensor(5474, "20190101", "ymd")
 
 #:   # Mapping example
-#'   date_range <- c(20190101:20190201) # 26 sec to pull 1 month worth of data
+#'   date_range <- c(20190101:20190201)
 #'   loop_data <- pmap(list(8564, date_range, "ymd"), pull_sensor)
 #'   loops_full <- rbindlist(loop_data)
 
 #'   # Parallel mapping example; takes longer if only pulling one or two days because libraries have to be copied to each core
 #'   library(parallel)
-#'   cl <- makeCluster(detectCores() - 1) %% Leaving one core unused
+#'   cl <- makeCluster(detectCores() - 1) # Leaving one core unused
 #'   params <- list(8564, date_range, "ymd")
 #'
 #'   clusterSetRNGStream(cl, 1)
@@ -30,21 +30,19 @@
 #'   loops_full <- rbindlist(loop_data)
 
 #' @export
+#' @importFrom magrittr %>%
+#' @importFrom lubridate ymd
+#' @importFrom lubridate mdy
+#' @importFrom lubridate dmy
+#' @importFrom lubridate as_date
+#' @importFrom jsonlite fromJSON
+#' @importFrom xml2 read
+#' @importFrom chron times
+#' @importFrom rowr cbind.fill
 
 pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 
-  library(tidyverse)
-  library(data.table)
-  library(lubridate)
-  library(chron)
-  library(rowr)
-  library(xml2)
-
   extension_pull <- function (ext, ...) {
-
-    library(tidyverse)
-    library(data.table)
-    library(jsonlite)
 
     if (date_fmt == "ymd") {
       pull_year <- year(as_date(ymd(pull_date)))
@@ -93,6 +91,11 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 #' sensors <- sensor_pull()
 #'
 #' @export
+#' @importFrom xml2 xml_find_all
+#' @importFrom xml2 xml_attr
+#' @importFrom magrittr %>%
+#' @importFrom tidyverse transmute
+#' @importFrom tidyverse enframe
 
 pull_sensor_ids <- function() {
   enframe(trimws(xml_attr(xml_find_all(metro_config, "//detector"), "name"))) %>%
@@ -111,6 +114,11 @@ pull_sensor_ids <- function() {
 #' pull_configuration("within_dir) # No assignment necessary
 #'
 #' @export
+#' @importFrom xml2 read_xml
+#' @importFrom xml2 xml_find_all
+#' @importFrom xml2 xml_attr
+#' @import tidyverse
+#' @importFrom data.table fwrite
 
 pull_configuration <- function(return_opt = c("within_dir", "in_memory")) {
 
