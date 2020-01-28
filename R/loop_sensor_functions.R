@@ -200,13 +200,11 @@ pull_configuration <- function(return_opt = c("within_dir", "in_memory")) {
   categories <- list("detector", "r_node", "corridor")
 
   attributes_full <- map2(categories, attr_all_ls, attr_to_df)
-  names(attributes_full) <- list("d_attributes_df", "r_attributes_df", "c_attributes_df")
-  list2env(attributes_full, .GlobalEnv)
 
   # Bind paths to attributes
-  d_paths_attr <- bind_cols(detector_paths, d_attributes_df)
-  rnode_paths_attr <- bind_cols(rnode_paths, r_attributes_df)
-  corr_paths_attrs <- bind_cols(corridor_paths, c_attributes_df)
+  d_paths_attr <- bind_cols(detector_paths, attributes_full[[1]])
+  rnode_paths_attr <- bind_cols(rnode_paths, attributes_full[[2]])
+  corr_paths_attrs <- bind_cols(corridor_paths, attributes_full[[3]])
 
   detector_rnodes_full <- left_join(d_paths_attr, rnode_paths_attr, by = c('rnode_path'))
   configuration <- left_join(detector_rnodes_full, corr_paths_attrs, by = c('corridor_path'))
