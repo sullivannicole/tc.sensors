@@ -10,7 +10,7 @@ pull_configuration(return_opt = c("within_dir", "in_memory"))
 \item{return_opt}{an object of class string which indicates how to return the data.  "within_dir" will return the data within the directory as a csv entitled "Configuration of Metro Detectors <<date in format yyyy-mm-dd>>". "in-memory" will return the data in R, but requires assignment.}
 }
 \value{
-dataframe containing 20 variables (including detector_field and lat/lons) for each sensor in MnDOT's metro district
+dataframe containing 20 variables, including detector_field and lat/lons, for each sensor in MnDOT's metro district
 }
 \description{
 Read MnDOT JSON feed and wrangle into a tidy dataframe containing 20 variables related to sensor configuration.  Useful for mapping (contains lat/lons) and calculating performance measures (contains detector_field).

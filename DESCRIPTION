@@ -1,12 +1,25 @@
 Package: tc.sensors
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Retrieve Loop Detector Data from the MnDOT JSON Feed
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Nicole Sullivan
+Maintainer: Nicole Sullivan <nicole.sullivan@metc.state.mn.us>
 Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+    Code in this repo processes data collected from Minnesota Department of Transportation (MnDOT) loop detectors installed
+    on the Minnesota Freeway system in 30-second interval measurements of occupancy and volume, data which are pushed daily to a public JSON feed.
+    Occupancy and volume data can be used to calculate speed and delay.
+License: None
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Imports: 
+    tidyverse,
+    data.table,
+    lubridate,
+    chron,
+    rowr,
+    xml2,
+    jsonlite,
+    tibble,
+    dplyr,
+    magrittr

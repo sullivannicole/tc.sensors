@@ -10,13 +10,13 @@
 #'
 #' @examples
 #'   # Simple example
-#'   loop_data <- pull_sensor(5474, "20190101", "ymd")
+#'   loop_data <- pull_sensor(5474, "20181014", "ymd")
 
 #:   # Mapping example
 #'   date_range <- c(20190101:20190201)
 #'   loop_data <- pmap(list(8564, date_range, "ymd"), pull_sensor)
 #'   loops_full <- rbindlist(loop_data)
-
+#'
 #'   # Parallel mapping example; takes longer if only pulling one or two days because libraries have to be copied to each core
 #'   library(parallel)
 #'   cl <- makeCluster(detectCores() - 1) # Leaving one core unused
@@ -26,19 +26,18 @@
 #'   loop_data <- params %>%
 #'    lift(clusterMap, cl = cl)(fun = pull_sensor)
 #'   stopCluster(cl)
-
+#'
 #'   loops_full <- rbindlist(loop_data)
-
-#' @export
+#'
 #' @importFrom magrittr %>%
-#' @importFrom lubridate ymd
-#' @importFrom lubridate mdy
-#' @importFrom lubridate dmy
-#' @importFrom lubridate as_date
+#' @importFrom tibble enframe as_tibble
+#' @importFrom lubridate ymd mdy dmy as_date year
 #' @importFrom jsonlite fromJSON
-#' @importFrom xml2 read
 #' @importFrom chron times
 #' @importFrom rowr cbind.fill
+#'
+#' @export
+
 
 pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 
@@ -90,14 +89,21 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 #' @examples
 #' sensors <- sensor_pull()
 #'
-#' @export
-#' @importFrom xml2 xml_find_all
-#' @importFrom xml2 xml_attr
+#' @importFrom xml2 read_xml xml_find_all xml_attr
 #' @importFrom magrittr %>%
-#' @importFrom tidyverse transmute
-#' @importFrom tidyverse enframe
+#' @importFrom dplyr transmute
+#' @importFrom tibble enframe
+#'
+#' @export
+
 
 pull_sensor_ids <- function() {
+
+  url <- "http://data.dot.state.mn.us/iris_xml/metro_config.xml.gz"
+  tmp <- tempfile()
+  download.file(url,tmp)
+  metro_config <- read_xml(gzfile(tmp))
+
   enframe(trimws(xml_attr(xml_find_all(metro_config, "//detector"), "name"))) %>%
     transmute(detector = value)
 }
@@ -107,18 +113,21 @@ pull_sensor_ids <- function() {
 #' Read MnDOT JSON feed and wrangle into a tidy dataframe containing 20 variables related to sensor configuration.  Useful for mapping (contains lat/lons) and calculating performance measures (contains detector_field).
 #'
 #' @param return_opt an object of class string which indicates how to return the data.  "within_dir" will return the data within the directory as a csv entitled "Configuration of Metro Detectors <<date in format yyyy-mm-dd>>". "in-memory" will return the data in R, but requires assignment.
-#' @return dataframe containing 20 variables (including detector_field and lat/lons) for each sensor in MnDOT's metro district
+#' @return dataframe containing 20 variables, including detector_field and lat/lons, for each sensor in MnDOT's metro district
 #'
 #' @examples
 #' config <- pull_configuration("in-memory") # Assign to an object
 #' pull_configuration("within_dir) # No assignment necessary
 #'
-#' @export
-#' @importFrom xml2 read_xml
-#' @importFrom xml2 xml_find_all
-#' @importFrom xml2 xml_attr
-#' @import tidyverse
+#' @importFrom xml2 read_xml xml_find_all xml_attr xml_path
+#' @importFrom dplyr mutate select rename bind_rows bind_cols left_join
+#' @importFrom tidyr separate unite
+#' @importFrom purrr map2
+#' @importFrom magrittr %>%
 #' @importFrom data.table fwrite
+#'
+#' @export
+
 
 pull_configuration <- function(return_opt = c("within_dir", "in_memory")) {
 
@@ -192,7 +201,7 @@ pull_configuration <- function(return_opt = c("within_dir", "in_memory")) {
 
   attributes_full <- map2(categories, attr_all_ls, attr_to_df)
   names(attributes_full) <- list("d_attributes_df", "r_attributes_df", "c_attributes_df")
-  list2env(attributes_full ,.GlobalEnv)
+  list2env(attributes_full, .GlobalEnv)
 
   # Bind paths to attributes
   d_paths_attr <- bind_cols(detector_paths, d_attributes_df)
