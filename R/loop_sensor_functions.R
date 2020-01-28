@@ -76,7 +76,10 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
            sensor = sensor)
 
   #Add time
-  cbind(loop_date_sensor, enframe(chron::times("00:00:00") + (1:2880)/2880) %>% transmute(time = value))
+  cbind(loop_date_sensor,
+        enframe(chron::times("00:00:00") + (1:2880)/2880) %>% transmute(time = value),
+        enframe(rep(0:23, each = 120)) %>% transmute(hour = value),
+        enframe(rep(seq(from = 0, to = 59.5, by = 0.5), times = 24)) %>% transmute(min = value))
 
 }
 
