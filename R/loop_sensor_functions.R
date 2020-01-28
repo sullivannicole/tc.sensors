@@ -38,6 +38,7 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
   library(lubridate)
   library(chron)
   library(rowr)
+  library(xml2)
 
   extension_pull <- function (ext, ...) {
 
@@ -93,7 +94,7 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
 #'
 #' @export
 
-sensor_pull <- function() {
+pull_sensor_ids <- function() {
   enframe(trimws(xml_attr(xml_find_all(metro_config, "//detector"), "name"))) %>%
     transmute(detector = value)
 }
