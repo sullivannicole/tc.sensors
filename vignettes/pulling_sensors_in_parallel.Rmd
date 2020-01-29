@@ -33,3 +33,20 @@ toc()
 stopCluster(cl)
 
 ```
+
+```{r}
+# If you want to save to an Access DB
+library(RODBC)
+
+test_conn <- odbcConnectAccess2007("C:\\Users\sullivN\\Documents\\LoopDBTest.accdb")
+sqlTables(test_conn, tableType = "TABLE")$TABLE_NAME # Check available tables
+
+sqlSave(channel = test_conn,
+        dat = loops_df,
+        append = T,
+        tablename = "testtable",
+        rownames = F) # Prevents RStudio from crashing
+
+check <- RODBC::sqlQuery(test_conn, "SELECT * from testtable WHERE date = 20191231")
+
+```
