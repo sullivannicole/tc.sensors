@@ -22,3 +22,5 @@ Imports:
     tibble,
     dplyr,
     magrittr
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
