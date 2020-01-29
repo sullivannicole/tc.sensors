@@ -10,7 +10,7 @@
 #'
 #' @examples
 #'   # Simple example
-#'   loop_data <- pull_sensor(5474, "20181014", "ymd")
+#'   loop_data <- pull_sensor(5474, 20181014, "ymd")
 
 #:   # Mapping example
 #'   date_range <- c(20190101:20190201)
@@ -31,31 +31,23 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble enframe as_tibble
-#' @importFrom lubridate ymd mdy dmy as_date year
 #' @importFrom jsonlite fromJSON
-#' @importFrom chron times
 #' @importFrom rowr cbind.fill
 #'
 #' @export
 
 
-pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
+pull_sensor <- function(sensor, pull_date) {
 
   extension_pull <- function (ext, ...) {
 
-    if (date_fmt == "ymd") {
-      pull_year <- year(as_date(ymd(pull_date)))
-    } else if (date_fmt == "mdy") {
-      pull_year <- year(as_date(mdy(pull_date)))
-    } else if (date_fmt == "dmy") {
-      pull_year <- year(as_date(dmy(pull_date)))
-    } else {
-      "Date format not supported.  Try 'ymd', 'mdy', or 'dmy'."
-    }
+    pull_year <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
+    pull_month <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
+    pull_day <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
 
     df_default <- as_tibble(NA, validate = F)
 
-    try(df_default <- enframe(fromJSON(paste0("http://data.dot.state.mn.us:8080/trafdat/metro/", pull_year, "/", pull_date, "/", sensor, ".", ext, "30.json"))) %>%
+    try(df_default <- enframe(fromJSON(paste0("http://data.dot.state.mn.us:8080/trafdat/metro/", pull_year, "/", pull_year, pull_month, pull_day, "/", sensor, ".", ext, "30.json"))) %>%
           select(-name))
 
     return(df_default)
@@ -76,11 +68,17 @@ pull_sensor <- function(sensor, pull_date, date_fmt = c("ymd", "dmy", "mdy")) {
            sensor = sensor)
 
   #Add time
-  cbind(loop_date_sensor,
-        enframe(chron::times("00:00:00") + (1:2880)/2880) %>% transmute(time = value),
-        enframe(rep(0:23, each = 120)) %>% transmute(hour = value),
-        enframe(rep(seq(from = 0, to = 59.5, by = 0.5), times = 24)) %>% transmute(min = value))
-
+  if (nrow(loop_date_sensor) == 1) {
+    # Return essentially empty dataframe if both volume and occupancy are missing for entire day
+    loop_date_sensor %>%
+      mutate(hour = NA,
+             min = NA)
+  } else {
+    # Add hour and minutes if either volume or occupancy (or both) are available
+    bind_cols(loop_date_sensor,
+              as_tibble(rep(0:23, each = 120)) %>% rename(hour = value),
+              as_tibble(rep(seq(from = 0, to = 59.5, by = 0.5))) %>% rename(min = value))
+  }
 }
 
 #' Function to pull all sensor IDs in the Twin Cities metro
