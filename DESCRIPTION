@@ -16,7 +16,6 @@ Imports:
     tidyverse,
     data.table,
     lubridate,
-    chron,
     rowr,
     xml2,
     jsonlite,

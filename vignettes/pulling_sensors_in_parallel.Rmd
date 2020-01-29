@@ -1,0 +1,35 @@
+---
+title: "Multiple sensors in parallel, one years' worth each"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+library(doParallel)
+library(foreach)
+library(tictoc) # If you want to benchmark - but you shouldn't have to; I already did (:
+
+cores <- detectCores()
+cl <- makeCluster(cores)
+registerDoParallel(cl)
+tic() # Start the timer
+
+foreach(j = 8624:8631) %dopar% {
+  date_range <- seq(as.Date("2019/01/01"), as.Date("2019/12/31"), by = "days")
+  n <- length(date_range)
+  loops_ls <- vector("list", n)
+  
+  for (i in 1:n) {
+    loops_ls[[i]] <- tc.sensors::pull_sensor(j, date_range[[i]])
+  }
+  
+  loops_df <- data.table::rbindlist(loops_ls)
+  data.table::fwrite(loops_df, paste0("N:\\MTS\\Working\\Planning\\MnDOT_Loop_detectors\\Volume-Occupancy\\2019\\Sensor ", j, ".csv"))
+}
+toc()
+stopCluster(cl)
+
+```
