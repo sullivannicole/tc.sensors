@@ -13,7 +13,9 @@ A package for pulling data for Minnesota Department of Transportation (MnDOT) lo
 ## Installation
 
 To use this package, clone this repo (open the terminal and navigate to the directory of your choice, then run `git clone https://github.com/sullivannicole/tc.sensors`) or just download this repo manually by clicking the green "Clone or Download" button above.  To install the package, you'll first need the devtools library installed, if you don't have it already.  Run `install.packages("devtools")` in an R script or notebook to do so.  Then attach the devtools package by running `library(devtools)`.  Last, run `build("~/package/path/here")`, the path being the directory in which you saved/cloned your local copy of tc.sensors.  Alternatively, if you're using RStudio, you can open the tc.sensors.Rproj file and then select "Clean and Rebuild" from the "Build" tab.
-<br>
+
+## Documentation
+
 To access documentation and for help on how to use the package, run `?<FUNCTION-NAME>` (e.g. `?pull_sensor`, `?pull_configuration`, `?pull_sensor_ids`).
 
 ## Contributor/Maintainer
