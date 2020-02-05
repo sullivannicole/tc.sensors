@@ -41,8 +41,8 @@ pull_sensor <- function(sensor, pull_date) {
   extension_pull <- function (ext, ...) {
 
     pull_year <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
-    pull_month <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
-    pull_day <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%Y")
+    pull_month <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%m")
+    pull_day <- format.Date(as.Date(pull_date, format = "%Y-%m-%d"), "%d")
 
     df_default <- as_tibble(NA, validate = F)
 
@@ -76,7 +76,7 @@ pull_sensor <- function(sensor, pull_date) {
     # Add hour and minutes if either volume or occupancy (or both) are available
     bind_cols(loop_date_sensor,
               as_tibble(rep(0:23, each = 120)) %>% rename(hour = value),
-              as_tibble(rep(seq(from = 0, to = 59.5, by = 0.5))) %>% rename(min = value))
+              as_tibble(rep(seq(from = 0, to = 59.5, by = 0.5), 24)) %>% rename(min = value))
   }
 }
 
