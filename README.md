@@ -16,7 +16,7 @@ To use this package, clone this repo (open the terminal and navigate to the dire
 
 ## Documentation
 
-To access documentation and for help on how to use the package, run `?<FUNCTION-NAME>` (e.g. `?pull_sensor`, `?pull_configuration`, `?pull_sensor_ids`).
+To access documentation and for help on how to use the package, run `?<FUNCTION-NAME>` (e.g. `?pull_sensor`, `?pull_configuration`, `?pull_sensor_ids`).  Access vignettes in the vignettes file to see examples of end-to-end workflows for pulling and storing data locally en masse.  Check back for a vignette (to be added in the near future!) for calculating speeds, reference speeds, delay, and VMT from the resulting files.
 
 ## Contributor/Maintainer
 * Nicole Sullivan (nicole.sullivan@metc.state.mn.us)
