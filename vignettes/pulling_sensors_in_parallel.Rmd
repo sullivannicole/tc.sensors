@@ -15,16 +15,12 @@ library(tictoc) # If you want to benchmark - but you shouldn't have to; I alread
 sensor_config <- pull_configuration()
 sensor_ids <- pull_sensor_ids()
 
-# sensors_data <- sensor_ids %>% filter(sensor_ids$detector %in% config_data$detector_name == TRUE)
-
-sensor_matrix <- data.matrix(sensor_ids)
-
 cores <- detectCores()
 cl <- makeCluster(cores)
 registerDoParallel(cl)
 tic() # Start the timer
 
-foreach(j = sensor_matrix[737:738]) %dopar% {
+foreach(j = sensor_ids[[1]][633:714]) %dopar% {
   date_range <- seq(as.Date("2019/01/01"), as.Date("2019/12/31"), by = "days")
   n <- length(date_range)
   loops_ls <- vector("list", n)
