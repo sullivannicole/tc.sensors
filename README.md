@@ -8,6 +8,7 @@
 <!-- badges: end -->
 
 ## Overview
+**Note: this repo for the package is no longer being maintained. For the most up-to-date version of the package, reach out to the [Travel forecasting lead](https://metrocouncil.org/Transportation/Contact.aspx).**
 A package for pulling data for Minnesota Department of Transportation (MnDOT) loop detectors installed on the Minnesota Freeway system in 30-second interval measurements of occupancy and volume, data which are pushed daily to a public JSON feed.
 
 ## Installation
